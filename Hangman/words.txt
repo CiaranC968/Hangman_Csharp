@@ -1,0 +1,7 @@
+﻿House
+Horse
+Mouse
+Cat
+Dog
+Friend
+Tiny

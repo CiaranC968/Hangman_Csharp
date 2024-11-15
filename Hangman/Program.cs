@@ -11,10 +11,12 @@ namespace Hangman
 
         static void Main(string[] args)
         {
+            string? word = GetRandomWord();
             if (!string.IsNullOrEmpty(word))
             {
                 List<string> correctGuesses = InitializeCorrectGuesses(word.Length);
                 int incorrectGuesses = 0;
+                HashSet<string> incorrectLetters = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
 
                 while (incorrectGuesses < maxIncorrectGuesses && correctGuesses.Contains("X"))
                 {
@@ -26,6 +28,7 @@ namespace Hangman
 
                     if (IsValidGuess(guess))
                     {
+                        string guessedChar = guess.ToLower();
 
                         if (incorrectLetters.Contains(guessedChar))
                         {
@@ -41,6 +44,7 @@ namespace Hangman
                             else
                             {
                                 incorrectGuesses++;
+                                incorrectLetters.Add(guessedChar);
                                 Console.WriteLine("Incorrect guess.");
                             }
                         }
@@ -61,6 +65,69 @@ namespace Hangman
             }
         }
 
+        static void DisplayHangman(int tries)
+        {
+            string[] stages = {
+                @"
+                   ------
+                   |    |
+                        |
+                        |
+                        |
+                        |
+                =========",
+                @"
+                   ------
+                   |    |
+                   O    |
+                        |
+                        |
+                        |
+                =========",
+                @"
+                   ------
+                   |    |
+                   O    |
+                   |    |
+                        |
+                        |
+                =========",
+                @"
+                   ------
+                   |    |
+                   O    |
+                  /|    |
+                        |
+                        |
+                =========",
+                @"
+                   ------
+                   |    |
+                   O    |
+                  /|\   |
+                        |
+                        |
+                =========",
+                @"
+                   ------
+                   |    |
+                   O    |
+                  /|\   |
+                  /     |
+                        |
+                =========",
+                @"
+                   ------
+                   |    |
+                   O    |
+                  /|\   |
+                  / \   |
+                        |
+                ========="
+            };
+            Console.WriteLine(stages[tries]);
+        }
+
         static List<string> InitializeCorrectGuesses(int length)
         {
             List<string> correctGuesses = new List<string>(new string[length]);
@@ -71,38 +138,36 @@ namespace Hangman
             return correctGuesses;
         }
 
-        // Displays the current masked word
         static void DisplayCurrentWord(List<string> correctGuesses)
         {
             Console.WriteLine("Current word: " + string.Join("", correctGuesses));
         }
 
-        // Gets a single character guess from the user
         static string GetGuessFromUser()
         {
             Console.Write("Guess a letter: ");
+            return Console.ReadLine();
         }
 
-        // Checks if the guess is valid (i.e., a single letter)
         static bool IsValidGuess(string guess)
         {
             return !string.IsNullOrEmpty(guess) && guess.Length == 1 && char.IsLetter(guess[0]);
         }
 
-        // Processes the user's guess and updates the correct guesses list if needed
         static bool ProcessGuess(string word, char guessedChar, List<string> correctGuesses)
         {
             bool isCorrect = false;
             for (int i = 0; i < word.Length; i++)
             {
+                if (char.ToLower(word[i]) == char.ToLower(guessedChar))
                 {
+                    correctGuesses[i] = word[i].ToString();
                     isCorrect = true;
                 }
             }
             return isCorrect;
         }
 
-        // Displays the final game outcome
         static void DisplayGameOutcome(int incorrectGuesses, string word)
         {
             if (incorrectGuesses == maxIncorrectGuesses)
@@ -116,6 +181,7 @@ namespace Hangman
             }
         }
 
+        static string? GetRandomWord()
         {
             try
             {

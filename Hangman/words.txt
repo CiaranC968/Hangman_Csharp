@@ -1,0 +1,9 @@
+﻿House
+Horse
+Mouse
+Cat
+Dog
+Friend
+Tiny
+Muff
+Moon
